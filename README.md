@@ -12,15 +12,6 @@ it, or attach a terminal to it.
 burner is a Python library and a command line tool. It runs on macOS and
 Linux and needs only the Python 3.11+ standard library.
 
-## Why the name
-
-A burner is the ring on a stove that you cook on. This one is for AI agents
-to cook on. An agent starts a dev server, a test run, or a full-screen
-program on a burner, leaves it running, and comes back to it by name: it
-reads the screen as plain text, presses keys, reads the log, and stops the
-session when the work is done. Nothing here is specific to AI. A script or
-a person uses the same commands.
-
 ## How it differs
 
 - **nohup** and `&` keep a process running, but give it no name, no screen,

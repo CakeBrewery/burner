@@ -1,0 +1,79 @@
+/[?1049h[24;1H[?1h="""A terminal screen model that turns the output of a program into rows of plain  text.
+
+It covers the VT and xterm subset that full screen programs such as Ink apps, vi m,
+less, and top use. Colors and other attributes are parsed and dropped. The rows
+match what `tmux capture-pane -p` prints for the same output, including tmux's
+handling of a pending wrap: after a character lands in the last column the curso r
+column equals `cols`, the next printable character wraps first, and line feeds,
+VPA, and edits keep that state as tmux does.
+"""
+
+from __future__ import annotations
+
+import codecs
+import re
+import unicodedata
+from functools import lru_cache
+
+PAD = ""  # The second cell of a wide character. It joins to nothing.
+ZWJ = "\u200d"
+VS16 = "\ufe0f"  # Emoji presentation: tmux draws the character before it two ce [7msrc/burner/screen.py[27m[K[K/[K__[KMM[KAA[KXX[K__[KCC[KEE[KLL[KLL[K[1;1H[K"""A terminal screen model that turns the output of a program into rows of plain [2;1H[K text.
+[3;1H[K
+[4;1H[KIt covers the VT and xterm subset that full screen programs such as Ink apps, vi [5;1H[Km,
+[6;1H[Kless, and top use. Colors and other attributes are parsed and dropped. The rows
+[7;1H[Kmatch what `tmux capture-pane -p` prints for the same output, including tmux's
+[8;1H[Khandling of a pending wrap: after a character lands in the last column the curso [9;1H[Kr
+[10;1H[Kcolumn equals `cols`, the next printable character wraps first, and line feeds,
+[11;1H[KVPA, and edits keep that state as tmux does.
+[12;1H[K"""
+[13;1H[K
+[14;1H[Kfrom __future__ import annotations
+[15;1H[K
+[16;1H[Kimport codecs
+[17;1H[Kimport re
+[18;1H[Kimport unicodedata
+[19;1H[Kfrom functools import lru_cache
+[20;1H[K
+[21;1H[KPAD = ""  # The second cell of a wide character. It joins to nothing.
+[22;1H[KZWJ = "\u200d"
+[23;1H[KVS16 = "\ufe0f"  # Emoji presentation: tmux draws the character before it two ce [24;1H[1;1H[K"""A terminal screen model that turns the output of a program into rows of plain [2;1H[K text.
+[3;1H[K
+[4;1H[KIt covers the VT and xterm subset that full screen programs such as Ink apps, vi [5;1H[Km,
+[6;1H[Kless, and top use. Colors and other attributes are parsed and dropped. The rows
+[7;1H[Kmatch what `tmux capture-pane -p` prints for the same output, including tmux's
+[8;1H[Khandling of a pending wrap: after a character lands in the last column the curso [9;1H[Kr
+[10;1H[Kcolumn equals `cols`, the next printable character wraps first, and line feeds,
+[11;1H[KVPA, and edits keep that state as tmux does.
+[12;1H[K"""
+[13;1H[K
+[14;1H[Kfrom __future__ import annotations
+[15;1H[K
+[16;1H[Kimport codecs
+[17;1H[Kimport re
+[18;1H[Kimport unicodedata
+[19;1H[Kfrom functools import lru_cache
+[20;1H[K
+[21;1H[KPAD = ""  # The second cell of a wide character. It joins to nothing.
+[22;1H[KZWJ = "\u200d"
+[23;1H[KVS16 = "\ufe0f"  # Emoji presentation: tmux draws the character before it two ce [24;1H...skipping...
+[7m_MAX_CELL[27m = 16  # Combining marks past this length on one cell are dropped.
+_CONTROL = re.compile(r"[\x00-\x1f\x7f-\x9f]")
+# DEC private modes that change what the terminal sends: cursor keys (1), mouse
+# reporting (1000, 1002, 1003) and its encodings (1005, 1006, 1015), focus
+# events (1004), and bracketed paste (2004). Programs set them once, so a
+# terminal that attaches later needs them set again to send the same input.
+INPUT_MODES = (1, 1000, 1002, 1003, 1004, 1005, 1006, 1015, 2004)
+
+GROUND, ESCAPE, ESCAPE_INTER, CSI, STRING = range(5)
+
+
+@lru_cache(maxsize=8192)
+def char_width(ch: str) -> int:
+    """Return the cells a character takes: 0 for marks that attach, 2 for wide o nes."""
+    o = ord(ch)
+    if o == 0xAD:  # A soft hyphen shows as one cell.
+        return 1
+    if 0x1160 <= o <= 0x11FF or 0xD7B0 <= o <= 0xD7FF:  # Hangul vowels and fina ls join.
+        return 0
+    if unicodedata.combining(ch) or unicodedata.category(ch) in ("Mn", "Me", "Cf "):
+:[K

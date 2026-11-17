@@ -1,0 +1,21 @@
+jjoedited^[[?1049h[>4;2m[?1h=[?2004h[?1004h[1;24r[?12h[?12l[22;2t[22;1t[27m[23m[29m[m[H[2J[?25l[24;1H"src/burner/screen.py" 646L, 23915B[2;1H▽[6n[2;1H  [3;1HPzz\[0%m[6n[3;1H           [1;1H[>c[1;1H"""A terminal screen model that turns the output of a program into rows of plainn[2;1H text.[2;7H[K[3;1H[K[4;1HIt covers the VT and xterm subset that full screen programs such as Ink apps, vii[5;1Hm,
+less, and top use. Colors and other attributes are parsed and dropped. The rows
+match what `tmux capture-pane -p` prints for the same output, including tmux's
+handling of a pending wrap: after a character lands in the last column the cursoo[9;1Hr
+column equals `cols`, the next printable character wraps first, and line feeds,
+VPA, and edits keep that state as tmux does.
+"""
+
+from __future__ import annotations
+
+import codecs
+import re
+import unicodedata
+from functools import lru_cache
+
+PAD = ""  # The second cell of a wide character. It joins to nothing.
+ZWJ = "\u200d"
+VS16 = "\ufe0f"  # Emoji presentation: tmux draws the character before it two ce[23;1H[94m@                                                                               [1;1H[?25h
+
+
+[?25l[m[24;1H[1m-- INSERT --[m[24;13H[K[24;1H[K[6;23r[6;1H[L[1;24r[6;1Hedited[?25h[?12$p

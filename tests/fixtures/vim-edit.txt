@@ -1,0 +1,23 @@
+"""A terminal screen model that turns the output of a program into rows of plain
+ text.
+
+It covers the VT and xterm subset that full screen programs such as Ink apps, vi
+m,
+edited
+less, and top use. Colors and other attributes are parsed and dropped. The rows
+match what `tmux capture-pane -p` prints for the same output, including tmux's
+handling of a pending wrap: after a character lands in the last column the curso
+r
+column equals `cols`, the next printable character wraps first, and line feeds,
+VPA, and edits keep that state as tmux does.
+"""
+
+from __future__ import annotations
+
+import codecs
+import re
+import unicodedata
+from functools import lru_cache
+
+PAD = ""  # The second cell of a wide character. It joins to nothing.
+ZWJ = "\u200d"

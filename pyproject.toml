@@ -1,0 +1,58 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "burner"
+dynamic = ["version"]
+description = "Keeps named processes running after their starter exits, with a readable screen, input, logs, and attach."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+dependencies = []
+keywords = ["process", "session", "pty", "terminal", "daemon", "dtach"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: System :: Shells",
+    "Topic :: Terminals",
+    "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/CakeBrewery/burner"
+Repository = "https://github.com/CakeBrewery/burner"
+Issues = "https://github.com/CakeBrewery/burner/issues"
+Changelog = "https://github.com/CakeBrewery/burner/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-timeout>=2.3", "ruff>=0.5", "setuptools>=77"]
+
+[project.scripts]
+burner = "burner.cli:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "burner.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+burner = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 60
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

@@ -7,9 +7,11 @@ Read `README.md` and `CONTRIBUTING.md` first.
   `coderabbit-review`. Without the label no review comes, so do not wait for
   one. A passing or skipped CodeRabbit check is not a review. A merge gate
   that needs a CodeRabbit review applies only to a labeled pull request.
-- Add the label to a pull request into `main` that changes security,
-  authentication, stored data, a migration, or a protocol, or when the owner
-  asks: `gh pr edit <number> --add-label coderabbit-review`.
+- Agents decide when a pull request needs a review and add the label
+  themselves: `gh pr edit <number> --add-label coderabbit-review`. Label most
+  pull requests into `main`. Skip one that changes only docs, generated
+  files, or lockfiles. Label a pull request into another branch when its
+  risk calls for a review.
 - The review covers the commits on the branch when the label goes on. Later
   pushes get no review. Ask the owner before you request another one, and do
   not post `@coderabbitai review` comments.

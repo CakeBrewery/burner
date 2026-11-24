@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit review settings. The shared base lives in the `coderabbit`
+# repository. Reference: https://docs.coderabbit.ai/reference/configuration
+inheritance: true
+reviews:
+  path_instructions:
+    - path: "src/burner/**"
+      instructions: >-
+        Check socket and run dir permissions, the protocol's input bounds,
+        signal handling, and host process cleanup. The public API changes
+        only with a CHANGELOG entry.
